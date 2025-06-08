@@ -44,7 +44,14 @@ public class UserCommandServiceImpl implements UserCommandService {
             if (role.isPresent()) roles.add(role.get());
         } else roles = roles.stream().map(role -> roleRepository.findByName(role.getName())
                 .orElseThrow(() -> new RuntimeException("Role not found"))).toList();
-        var user = new User(command.email(), hashingService.encode(command.password()), roles);
+        var user = new User(
+                command.email(),
+                hashingService.encode(command.password()),
+                command.firstName(),
+                command.lastName(),
+                command.phone(),
+                roles
+        );
         userRepository.save(user);
         return userRepository.findByEmail(command.email());
     }
