@@ -26,6 +26,10 @@ public class Role extends AuditableModel {
         this.name = name;
     }
 
+    public String getStringName() {
+        return name.name();
+    }
+
     public static Role getDefaultRole() {
         return new Role(Roles.ROLE_TOURIST);
     }
