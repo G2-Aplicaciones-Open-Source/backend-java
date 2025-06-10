@@ -1,12 +1,13 @@
 package pe.edu.upc.travelmatch.profiles.domain.model.aggregates;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import pe.edu.upc.travelmatch.profiles.domain.model.entities.CartItem;
 import pe.edu.upc.travelmatch.profiles.domain.model.valueobjects.UserId;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,7 @@ public class Cart extends AuditableAbstractAggregateRoot<Cart> {
 
     @Getter
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items;
+    private final List<CartItem> items = new ArrayList<>();
 
     public Cart(UserId userId) {
         this.userId = userId;
@@ -34,7 +35,6 @@ public class Cart extends AuditableAbstractAggregateRoot<Cart> {
         item.setCart(this);
         this.items.add(item);
     }
-
 
     public void removeItem(CartItem item) {
         item.setCart(null);

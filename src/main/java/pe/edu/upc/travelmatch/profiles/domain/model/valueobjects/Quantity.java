@@ -1,5 +1,8 @@
 package pe.edu.upc.travelmatch.profiles.domain.model.valueobjects;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public record Quantity(int value) {
     public Quantity {
         if(value < 0)

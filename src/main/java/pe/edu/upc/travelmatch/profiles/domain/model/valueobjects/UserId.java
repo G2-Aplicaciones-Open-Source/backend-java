@@ -1,5 +1,8 @@
 package pe.edu.upc.travelmatch.profiles.domain.model.valueobjects;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public record UserId(Long userId) {
     public UserId {
         if(userId < 0)

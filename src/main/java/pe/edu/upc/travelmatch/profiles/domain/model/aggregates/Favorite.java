@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "favorites", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "experience_id"})
+})
 @NoArgsConstructor
 public class Favorite extends AuditableAbstractAggregateRoot<Favorite> {
     @Embedded
