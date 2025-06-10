@@ -23,10 +23,11 @@ public class Review extends AuditableAbstractAggregateRoot<Review> {
 
     @Embedded
     @Getter
+    @AttributeOverride(name = "rating", column = @Column(name = "rating", nullable = false))
     private Rating rating;
 
     @Getter
-    @Column(length = 2000) // @Lob si planeas comentarios largos
+    @Column(length = 2000)
     private String comment;
 
     public Review(UserId userId, ExperienceId experienceId, Rating rating, String comment) {

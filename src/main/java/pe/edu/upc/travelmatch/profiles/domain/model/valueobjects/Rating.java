@@ -3,9 +3,9 @@ package pe.edu.upc.travelmatch.profiles.domain.model.valueobjects;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public record Rating(int value) {
+public record Rating(int rating) {
     public Rating {
-        if (value < 1 || value > 5) {
+        if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
     }

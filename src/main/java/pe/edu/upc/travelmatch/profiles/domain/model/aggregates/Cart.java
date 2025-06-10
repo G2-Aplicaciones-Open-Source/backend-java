@@ -7,19 +7,19 @@ import pe.edu.upc.travelmatch.profiles.domain.model.entities.CartItem;
 import pe.edu.upc.travelmatch.profiles.domain.model.valueobjects.UserId;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
 public class Cart extends AuditableAbstractAggregateRoot<Cart> {
+    @Getter
     @Embedded
     @AttributeOverride(name = "userId", column = @Column(name = "user_id", nullable = false, unique = true))
     private UserId userId;
 
     @Getter
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items = new ArrayList<>();
+    private List<CartItem> items;
 
     public Cart(UserId userId) {
         this.userId = userId;

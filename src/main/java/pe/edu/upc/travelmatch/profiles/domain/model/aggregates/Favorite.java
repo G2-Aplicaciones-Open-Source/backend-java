@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Embeddable
 @NoArgsConstructor
 public class Favorite extends AuditableAbstractAggregateRoot<Favorite> {
     @Embedded

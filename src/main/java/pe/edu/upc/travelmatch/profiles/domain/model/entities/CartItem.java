@@ -19,14 +19,24 @@ public class CartItem extends AuditableModel {
 
     @Embedded
     @Getter
+    @AttributeOverrides({
+            @AttributeOverride(name = "availabilityId", column = @Column(name = "availability_id", nullable = false))
+    })
     private AvailabilityId availabilityId;
 
     @Embedded
     @Getter
+    @AttributeOverrides({
+            @AttributeOverride(name = "value", column = @Column(name = "quantity", nullable = false))
+    })
     private Quantity quantity;
 
     @Embedded
     @Getter
+    @AttributeOverrides({
+            @AttributeOverride(name = "value", column = @Column(name = "price_amount", nullable = false)),
+            @AttributeOverride(name = "currency", column = @Column(name = "price_currency", nullable = false))
+    })
     private Money price;
 
     @ManyToOne(fetch = FetchType.LAZY)
