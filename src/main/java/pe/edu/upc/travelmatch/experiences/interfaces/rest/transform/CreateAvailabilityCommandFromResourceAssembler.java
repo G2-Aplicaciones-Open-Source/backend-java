@@ -4,10 +4,11 @@ import pe.edu.upc.travelmatch.experiences.domain.model.commands.CreateAvailabili
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.CreateAvailabilityResource;
 
 public class CreateAvailabilityCommandFromResourceAssembler {
-    public static CreateAvailabilityCommand toCommandFromResource(CreateAvailabilityResource resource) {
+    public static CreateAvailabilityCommand toCommandFromResource(CreateAvailabilityResource resource, Long experienceId) {
         return new CreateAvailabilityCommand(
-                resource.experienceId(),
-                resource.availableDate(),
+                experienceId,
+                resource.startDateTime(),
+                resource.endDateTime(),
                 resource.capacity()
         );
     }

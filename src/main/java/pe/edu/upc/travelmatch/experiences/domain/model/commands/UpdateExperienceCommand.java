@@ -1,11 +1,9 @@
-package pe.edu.upc.travelmatch.experiences.interfaces.rest.resources;
+package pe.edu.upc.travelmatch.experiences.domain.model.commands;
 
-
-public record ExperienceResource(
-        Long id,
+public record UpdateExperienceCommand(
+        Long experienceId,
         String title,
         String description,
-        Long agencyId,
         Long categoryId,
         Long destinationId,
         String duration,

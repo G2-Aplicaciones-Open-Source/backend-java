@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.*;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-
+import java.util.Date;
 @Entity
 @Table(name = "experiences")
 @NoArgsConstructor
@@ -31,11 +31,43 @@ public class Experience extends AuditableAbstractAggregateRoot<Experience> {
     @Column(nullable = false)
     private Long destinationId;
 
-    public Experience(String title, String description, Long agencyId, Long categoryId, Long destinationId) {
+    @Getter
+    @Column(columnDefinition = "TEXT")
+    private String duration;
+
+    @Getter
+    @Column(name = "meeting_point", columnDefinition = "TEXT")
+    private String meetingPoint;
+
+    @Getter
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+    public void markAsDeleted() {
+        this.deletedAt = new Date();
+    }
+    public Experience(String title, String description, Long agencyId, Long categoryId,
+                      Long destinationId, String duration, String meetingPoint) {
         this.title = title;
         this.description = description;
         this.agencyId = agencyId;
         this.categoryId = categoryId;
         this.destinationId = destinationId;
+        this.duration = duration;
+        this.meetingPoint = meetingPoint;
     }
+
+    public ExperienceId getExperienceId() {
+        return new ExperienceId(getId());
+    }
+
+    public void updateInfo(String title, String description, Long categoryId, Long destinationId,
+                           String duration, String meetingPoint) {
+        this.title = title;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.destinationId = destinationId;
+        this.duration = duration;
+        this.meetingPoint = meetingPoint;
+    }
+
 }
