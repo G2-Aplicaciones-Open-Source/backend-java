@@ -36,4 +36,18 @@ public class Review extends AuditableAbstractAggregateRoot<Review> {
         this.rating = rating;
         this.comment = comment;
     }
+
+    public void updateRating(Rating newRating) {
+        if (newRating == null) {
+            throw new IllegalArgumentException("Rating cannot be null");
+        }
+        this.rating = newRating;
+    }
+
+    public void updateComment(String newComment) {
+        if (newComment == null || newComment.isBlank()) {
+            throw new IllegalArgumentException("Comment cannot be null or empty");
+        }
+        this.comment = newComment;
+    }
 }

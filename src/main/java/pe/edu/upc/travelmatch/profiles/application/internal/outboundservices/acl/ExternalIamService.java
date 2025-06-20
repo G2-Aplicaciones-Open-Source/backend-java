@@ -7,7 +7,7 @@
     import java.util.List;
     import java.util.Optional;
 
-    @Service
+    @Service("profileExternalIamService")
     public class ExternalIamService {
 
         private final IamContextFacade iamContextFacade;
