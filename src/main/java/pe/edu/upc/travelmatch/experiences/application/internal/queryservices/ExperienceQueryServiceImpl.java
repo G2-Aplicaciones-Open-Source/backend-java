@@ -20,13 +20,15 @@ public class ExperienceQueryServiceImpl implements ExperienceQueryService {
         this.experienceRepository = experienceRepository;
     }
 
+
     @Override
     public List<Experience> handle(GetAllExperiencesQuery query) {
-        return experienceRepository.findAll();
+        return experienceRepository.findAllByDeletedAtIsNull();
     }
 
     @Override
     public Optional<Experience> handle(GetExperienceByIdQuery query) {
         return experienceRepository.findById(query.experienceId());
     }
+
 }

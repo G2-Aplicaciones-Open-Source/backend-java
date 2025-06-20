@@ -10,8 +10,10 @@ import pe.edu.upc.travelmatch.experiences.domain.services.ExperienceCommandServi
 import pe.edu.upc.travelmatch.experiences.domain.services.ExperienceQueryService;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.CreateExperienceResource;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.ExperienceResource;
+import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.UpdateExperienceResource;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.transform.CreateExperienceCommandFromResourceAssembler;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.transform.ExperienceResourceFromEntityAssembler;
+import pe.edu.upc.travelmatch.experiences.interfaces.rest.transform.UpdateExperienceCommandFromResourceAssembler;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +33,18 @@ public class ExperiencesController {
         this.queryService = queryService;
     }
 
-    @PostMapping
-    public ResponseEntity<ExperienceResource> createExperience(@RequestBody CreateExperienceResource resource) {
-        CreateExperienceCommand command = CreateExperienceCommandFromResourceAssembler.toCommandFromResource(resource);
+    @PostMapping("/{agencyId}/experiences")
+    public ResponseEntity<ExperienceResource> createExperience(
+            @PathVariable Long agencyId,
+            @RequestBody CreateExperienceResource resource
+    ) {
+        // Usamos agencyId del path en lugar del que venga en el body
+        CreateExperienceCommand command =
+                CreateExperienceCommandFromResourceAssembler.toCommandFromResource(resource, agencyId);
+
         Long id = commandService.handle(command);
-        Optional<ExperienceResource> created = queryService.handle(new GetExperienceByIdQuery(id))
+        Optional<ExperienceResource> created = queryService
+                .handle(new GetExperienceByIdQuery(id))
                 .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity);
 
         return created.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
@@ -50,5 +59,25 @@ public class ExperiencesController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(resources);
+    }
+
+    @PutMapping("/{experienceId}")
+    public ResponseEntity<ExperienceResource> updateExperience(
+            @PathVariable Long experienceId,
+            @RequestBody UpdateExperienceResource resource
+    ) {
+        var command = UpdateExperienceCommandFromResourceAssembler.toCommandFromResource(resource, experienceId);
+        commandService.updateExperience(command);
+
+        var updated = queryService.handle(new GetExperienceByIdQuery(experienceId))
+                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity);
+
+        return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{experienceId}")
+    public ResponseEntity<Void> deleteExperience(@PathVariable Long experienceId) {
+        commandService.deleteExperience(experienceId);
+        return ResponseEntity.noContent().build();
     }
 }

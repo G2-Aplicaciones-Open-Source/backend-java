@@ -1,11 +1,8 @@
 package pe.edu.upc.travelmatch.experiences.interfaces.rest.resources;
 
-
-public record ExperienceResource(
-        Long id,
+public record UpdateExperienceResource(
         String title,
         String description,
-        Long agencyId,
         Long categoryId,
         Long destinationId,
         String duration,
