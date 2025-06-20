@@ -1,6 +1,7 @@
 package pe.edu.upc.travelmatch.iam.interfaces.acl;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Service;
 import pe.edu.upc.travelmatch.iam.domain.model.commands.SignUpCommand;
 import pe.edu.upc.travelmatch.iam.domain.model.entities.Role;
 import pe.edu.upc.travelmatch.iam.domain.model.queries.GetUserByEmailQuery;
@@ -10,7 +11,7 @@ import pe.edu.upc.travelmatch.iam.domain.services.UserQueryService;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class IamContextFacade {
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
@@ -53,5 +54,12 @@ public class IamContextFacade {
         if (result.isEmpty()) return Strings.EMPTY;
         return result.get().getEmail();
     }
+    public boolean existsUserByRole(Long userId, String roleName) {
+        var query = new GetUserByIdQuery(userId);
+        var result = userQueryService.handle(query);
+        if (result.isEmpty()) return false;
 
+        return result.get().getRoles().stream()
+                .anyMatch(role -> role.getStringName().equals(roleName));
+    }
 }

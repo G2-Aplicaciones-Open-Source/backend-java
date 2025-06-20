@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AvailabilityRepository extends JpaRepository<Availability, Long> {
-    List<Availability> findByExperienceId(Long experienceId);
+    List<Availability> findAllByDeletedAtIsNull();
 }
