@@ -27,6 +27,10 @@
             return iamContextFacade.existsUserByEmailAndIdIsNot(email, id);
         }
 
+        public boolean existsUserById(UserId userId) {
+            return iamContextFacade.existsUserById(userId.userId());
+        }
+
         public Optional<UserId> createUser(String email, String password, String firstName, String lastName, String phone, List<String> roleNames) {
             var userId = iamContextFacade.createUser(email, password, firstName, lastName, phone, roleNames);
             if(userId.equals(0L))
