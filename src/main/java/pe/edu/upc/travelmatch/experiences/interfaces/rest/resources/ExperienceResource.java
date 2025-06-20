@@ -7,5 +7,7 @@ public record ExperienceResource(
         String description,
         Long agencyId,
         Long categoryId,
-        Long destinationId
+        Long destinationId,
+        String duration,
+        String meetingPoint
 ) {}

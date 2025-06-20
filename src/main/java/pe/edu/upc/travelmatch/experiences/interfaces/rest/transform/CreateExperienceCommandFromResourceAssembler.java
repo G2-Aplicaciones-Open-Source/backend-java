@@ -4,13 +4,15 @@ import pe.edu.upc.travelmatch.experiences.domain.model.commands.CreateExperience
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.CreateExperienceResource;
 
 public class CreateExperienceCommandFromResourceAssembler {
-    public static CreateExperienceCommand toCommandFromResource(CreateExperienceResource resource) {
+    public static CreateExperienceCommand toCommandFromResource(CreateExperienceResource resource, Long agencyId) {
         return new CreateExperienceCommand(
                 resource.title(),
                 resource.description(),
-                resource.agencyId(),
+                agencyId,
                 resource.categoryId(),
-                resource.destinationId()
+                resource.destinationId(),
+                resource.duration(),
+                resource.meetingPoint()
         );
     }
 }

@@ -80,5 +80,12 @@ public class IamContextFacade {
         if (result.isEmpty()) return Strings.EMPTY;
         return result.get().getEmail();
     }
+    public boolean existsUserByRole(Long userId, String roleName) {
+        var query = new GetUserByIdQuery(userId);
+        var result = userQueryService.handle(query);
+        if (result.isEmpty()) return false;
 
+        return result.get().getRoles().stream()
+                .anyMatch(role -> role.getStringName().equals(roleName));
+    }
 }
