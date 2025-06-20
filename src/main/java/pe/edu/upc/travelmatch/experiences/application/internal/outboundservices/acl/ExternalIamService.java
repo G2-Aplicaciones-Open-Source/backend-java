@@ -3,7 +3,7 @@ package pe.edu.upc.travelmatch.experiences.application.internal.outboundservices
 import org.springframework.stereotype.Service;
 import pe.edu.upc.travelmatch.iam.interfaces.acl.IamContextFacade;
 
-@Service
+@Service("experienceExternalIamService")
 public class ExternalIamService {
 
     private final IamContextFacade iamContextFacade;
