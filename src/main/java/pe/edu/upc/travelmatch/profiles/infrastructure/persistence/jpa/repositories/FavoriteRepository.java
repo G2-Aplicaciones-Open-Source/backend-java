@@ -14,5 +14,4 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByUserIdAndExperienceId(UserId userId, ExperienceId experienceId);
     List<Favorite> findAllByUserId(UserId userId);
     List<Favorite> findAllByExperienceId(ExperienceId experienceId);
-    void deleteByUserIdAndExperienceId(UserId userId, ExperienceId experienceId);
 }

@@ -5,6 +5,7 @@ import pe.edu.upc.travelmatch.profiles.domain.model.aggregates.Cart;
 import pe.edu.upc.travelmatch.profiles.domain.model.entities.CartItem;
 import pe.edu.upc.travelmatch.profiles.domain.model.queries.GetCartByUserIdQuery;
 import pe.edu.upc.travelmatch.profiles.domain.model.queries.GetCartItemByUserIdAndAvailabilityIdQuery;
+import pe.edu.upc.travelmatch.profiles.domain.model.queries.GetCartItemCountQuery;
 import pe.edu.upc.travelmatch.profiles.domain.services.CartQueryService;
 import pe.edu.upc.travelmatch.profiles.infrastructure.persistence.jpa.repositories.CartRepository;
 
@@ -27,5 +28,10 @@ public class CartQueryServiceImpl implements CartQueryService {
     @Override
     public Optional<CartItem> handle(GetCartItemByUserIdAndAvailabilityIdQuery query) {
         return this.cartRepository.findCartItemByUserIdAndAvailabilityId(query.userId(), query.availabilityId());
+    }
+
+    @Override
+    public int handle(GetCartItemCountQuery query) {
+        return this.cartRepository.countCartItemsByUserId(query.userId());
     }
 }
