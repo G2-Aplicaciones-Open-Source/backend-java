@@ -12,12 +12,23 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
+
     Optional<Cart> findByUserId(UserId userId);
+
     boolean existsByUserId(UserId userId);
+
     @Query("""
     SELECT ci FROM Cart c
     JOIN c.items ci
     WHERE c.userId = :userId AND ci.availabilityId = :availabilityId
     """)
     Optional<CartItem> findCartItemByUserIdAndAvailabilityId(UserId userId, AvailabilityId availabilityId);
+
+
+    @Query("""
+    SELECT COUNT(ci) FROM Cart c
+    JOIN c.items ci
+    WHERE c.userId = :userId
+    """)
+    int countCartItemsByUserId(UserId userId);
 }

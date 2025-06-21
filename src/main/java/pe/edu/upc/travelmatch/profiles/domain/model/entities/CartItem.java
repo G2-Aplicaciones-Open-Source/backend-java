@@ -27,6 +27,7 @@ public class CartItem extends AuditableModel {
 
     @Embedded
     @Getter
+    @Setter
     @AttributeOverrides({
             @AttributeOverride(name = "value", column = @Column(name = "quantity", nullable = false))
     })
