@@ -1,6 +1,7 @@
 package pe.edu.upc.travelmatch.profiles.domain.model.aggregates;
 
 import pe.edu.upc.travelmatch.profiles.domain.model.entities.CartItem;
+import pe.edu.upc.travelmatch.profiles.domain.model.valueobjects.AvailabilityId;
 import pe.edu.upc.travelmatch.profiles.domain.model.valueobjects.UserId;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import jakarta.persistence.*;
@@ -36,8 +37,13 @@ public class Cart extends AuditableAbstractAggregateRoot<Cart> {
         this.items.add(item);
     }
 
-    public void removeItem(CartItem item) {
-        item.setCart(null);
-        this.items.remove(item);
+    public void removeItem(AvailabilityId availabilityId) {
+        CartItem itemToRemove = this.items.stream()
+                .filter(item -> item.getAvailabilityId().equals(availabilityId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Item with this availability not found in cart."));
+
+        itemToRemove.setCart(null);
+        this.items.remove(itemToRemove);
     }
 }
