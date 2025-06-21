@@ -4,6 +4,6 @@ import pe.edu.upc.travelmatch.profiles.domain.model.commands.CreateFavoriteComma
 import pe.edu.upc.travelmatch.profiles.domain.model.commands.DeleteFavoriteCommand;
 
 public interface FavoriteCommandService {
-    void handle(CreateFavoriteCommand command);
+    Long handle(CreateFavoriteCommand command);
     void handle(DeleteFavoriteCommand command);
 }
