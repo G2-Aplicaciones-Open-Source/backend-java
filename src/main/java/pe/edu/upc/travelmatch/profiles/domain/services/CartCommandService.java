@@ -13,4 +13,3 @@ public interface CartCommandService {
     Optional<Cart> handle(RemoveCartItemCommand command);
     Optional<CartItem> handle(UpdateCartItemQuantityCommand command);
 }
-
