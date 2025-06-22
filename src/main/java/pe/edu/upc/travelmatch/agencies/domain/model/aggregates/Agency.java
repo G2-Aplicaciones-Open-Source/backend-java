@@ -2,12 +2,14 @@ package pe.edu.upc.travelmatch.agencies.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import pe.edu.upc.travelmatch.agencies.domain.model.valueobjects.AgencyName;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Agency extends AuditableAbstractAggregateRoot {
 
@@ -32,13 +34,17 @@ public class Agency extends AuditableAbstractAggregateRoot {
     @Column(nullable = false)
     private String contactPhone;
 
-    public Agency(AgencyName name, String description, String ruc, String address, String contactEmail, String contactPhone) {
+    @Column(nullable = false)
+    private Long userId;
+
+    public Agency(AgencyName name, String description, String ruc, String address, String contactEmail, String contactPhone, Long userId) {
         this.name = name;
         this.description = description;
         this.ruc = ruc;
         this.address = address;
         this.contactEmail = contactEmail;
         this.contactPhone = contactPhone;
+        this.userId = userId;
     }
 
     public void updateDetails(AgencyName name, String description, String address, String contactEmail, String contactPhone) {
