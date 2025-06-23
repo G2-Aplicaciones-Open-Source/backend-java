@@ -1,5 +1,7 @@
 package pe.edu.upc.travelmatch.experiences.interfaces.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +36,14 @@ public class AvailabilitiesController {
         this.availabilityQueryService = availabilityQueryService;
         this.availabilityTicketTypeCommandService = availabilityTicketTypeCommandService;
     }
-
+    @Operation(
+            summary = "Create availability for an experience",
+            description = "Creates a new availability entry for a given experience",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Availability created successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data")
+            }
+    )
     @PostMapping("/experiences/{experienceId}/availabilities")
     public ResponseEntity<Long> createAvailability(
             @PathVariable Long experienceId,
@@ -50,6 +59,15 @@ public class AvailabilitiesController {
         return ResponseEntity.ok(id);
     }
 
+
+    @Operation(
+            summary = "Update availability",
+            description = "Updates an existing availability by ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Availability updated successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid data")
+            }
+    )
     @PutMapping("/availabilities/{availabilityId}")
     public ResponseEntity<Void> updateAvailability(
             @PathVariable Long availabilityId,
@@ -65,12 +83,28 @@ public class AvailabilitiesController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @Operation(
+            summary = "Delete availability",
+            description = "Deletes a specific availability by ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Availability deleted successfully")
+            }
+    )
     @DeleteMapping("/availabilities/{availabilityId}")
     public ResponseEntity<Void> deleteAvailability(@PathVariable Long availabilityId) {
         availabilityCommandService.deleteAvailability(availabilityId);
         return ResponseEntity.noContent().build();
     }
 
+
+    @Operation(
+            summary = "Get all availabilities",
+            description = "Retrieves all availabilities in the system",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of availabilities returned")
+            }
+    )
     @GetMapping("/availabilities")
     public ResponseEntity<List<AvailabilityResource>> getAllAvailabilities() {
         List<Availability> list = availabilityQueryService.getAllAvailabilities();
@@ -80,6 +114,14 @@ public class AvailabilitiesController {
         return ResponseEntity.ok(result);
     }
 
+
+    @Operation(
+            summary = "Create a ticket type for an availability",
+            description = "Registers a new ticket type under a specific availability",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ticket type created successfully")
+            }
+    )
     @PostMapping("/availabilities/{availabilityId}/ticket-types")
     public ResponseEntity<Long> createTicketTypeForAvailability(
             @RequestBody CreateAvailabilityTicketTypeResource resource
