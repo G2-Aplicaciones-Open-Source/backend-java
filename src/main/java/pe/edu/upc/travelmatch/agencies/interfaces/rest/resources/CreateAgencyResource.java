@@ -10,5 +10,6 @@ public record CreateAgencyResource(
         @NotBlank @Pattern(regexp = "\\d{11}", message = "RUC must be 11 digits") String ruc,
         @NotBlank String address,
         @NotBlank @Email String contactEmail,
-        @NotBlank @Pattern(regexp = "\\d{9}", message = "Contact phone must be 9 digits") String contactPhone
+        @NotBlank @Pattern(regexp = "\\d{9}", message = "Contact phone must be 9 digits") String contactPhone,
+        @NotBlank Long userId
 ) {}

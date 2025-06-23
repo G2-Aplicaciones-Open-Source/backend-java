@@ -8,6 +8,7 @@ import pe.edu.upc.travelmatch.agencies.domain.model.commands.DeleteAgencyCommand
 import pe.edu.upc.travelmatch.agencies.domain.model.valueobjects.AgencyName;
 import pe.edu.upc.travelmatch.agencies.domain.services.AgencyCommandService;
 import pe.edu.upc.travelmatch.agencies.infrastructure.persistence.jpa.repositories.AgencyRepository;
+import pe.edu.upc.travelmatch.agencies.interfaces.acl.AgenciesContextFacade;
 
 import java.util.Optional;
 
@@ -15,13 +16,22 @@ import java.util.Optional;
 public class AgencyCommandServiceImpl implements AgencyCommandService {
 
     private final AgencyRepository agencyRepository;
+    private final AgenciesContextFacade agenciesContextFacade;
 
-    public AgencyCommandServiceImpl(AgencyRepository agencyRepository) {
+    public AgencyCommandServiceImpl(AgencyRepository agencyRepository, AgenciesContextFacade agenciesContextFacade) {
         this.agencyRepository = agencyRepository;
+        this.agenciesContextFacade = agenciesContextFacade;
     }
 
     @Override
     public Long handle(CreateAgencyCommand command) {
+
+        if (!agenciesContextFacade.existsUserById(command.userId())) {
+            throw new IllegalArgumentException("User with ID " + command.userId() + " does not exist in IAM.");
+        }
+        if (agencyRepository.existsByUserId(command.userId())) {
+            throw new IllegalArgumentException("Agency already exists for user ID " + command.userId() + ".");
+        }
         if (agencyRepository.existsByRuc(command.ruc())) {
             throw new IllegalArgumentException("Agency with RUC " + command.ruc() + " already exists.");
         }
@@ -30,7 +40,7 @@ public class AgencyCommandServiceImpl implements AgencyCommandService {
         }
 
         var agencyName = new AgencyName(command.name());
-        var agency = new Agency(agencyName, command.description(), command.ruc(), command.address(), command.contactEmail(), command.contactPhone());
+        var agency = new Agency(agencyName, command.description(), command.ruc(), command.address(), command.contactEmail(), command.contactPhone(), command.userId());
         agencyRepository.save(agency);
         return agency.getId();
     }
