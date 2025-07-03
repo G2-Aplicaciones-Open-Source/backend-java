@@ -5,7 +5,6 @@ public record AgencyResource(
         String name,
         String description,
         String ruc,
-        String address,
         String contactEmail,
         String contactPhone
 ) {}

@@ -10,7 +10,6 @@ public class AgencyResourceFromAgencyAssembler {
                 entity.getName().getName(),
                 entity.getDescription(),
                 entity.getRuc(),
-                entity.getAddress(),
                 entity.getContactEmail(),
                 entity.getContactPhone()
         );
