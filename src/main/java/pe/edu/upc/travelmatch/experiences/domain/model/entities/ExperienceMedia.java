@@ -1,10 +1,11 @@
 package pe.edu.upc.travelmatch.experiences.domain.model.entities;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pe.edu.upc.travelmatch.shared.domain.model.entities.AuditableModel;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "experience_media")
@@ -17,20 +18,33 @@ public class ExperienceMedia extends AuditableModel {
     private Long id;
 
     @Getter
-    @Column(nullable = false)
+    @Column(name = "experience_id", nullable = false)
     private Long experienceId;
 
     @Getter
-    @Column(nullable = false)
-    private String url;
+    @Column(name = "media_url", nullable = false, length = 256)
+    private String mediaUrl;
 
     @Getter
-    @Column(nullable = false)
-    private String type;
+    @Column(name = "caption", length = 256)
+    private String caption;
 
-    public ExperienceMedia(Long experienceId, String url, String type) {
+    @Getter
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+
+    public ExperienceMedia(Long experienceId, String mediaUrl, String caption) {
         this.experienceId = experienceId;
-        this.url = url;
-        this.type = type;
+        this.mediaUrl = mediaUrl;
+        this.caption = caption;
+    }
+
+    public void update(String mediaUrl, String caption) {
+        this.mediaUrl = mediaUrl;
+        this.caption = caption;
+    }
+
+    public void markAsDeleted() {
+        this.deletedAt = new Date();
     }
 }

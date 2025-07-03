@@ -11,7 +11,8 @@ public class CreateAgencyCommandFromResourceAssembler {
                 resource.ruc(),
                 resource.address(),
                 resource.contactEmail(),
-                resource.contactPhone()
+                resource.contactPhone(),
+                resource.userId()
         );
     }
 }

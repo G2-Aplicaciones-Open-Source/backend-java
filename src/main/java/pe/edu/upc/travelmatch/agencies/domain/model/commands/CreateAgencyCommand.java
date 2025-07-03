@@ -6,5 +6,6 @@ public record CreateAgencyCommand(
         String ruc,
         String address,
         String contactEmail,
-        String contactPhone
+        String contactPhone,
+        Long userId
 ) {}

@@ -11,4 +11,5 @@ public interface AgencyRepository extends JpaRepository<Agency, Long> {
     boolean existsByRuc(String ruc);
     boolean existsByContactEmail(String contactEmail);
     boolean existsByContactEmailAndIdIsNot(String contactEmail, Long currentAgencyId);
+    boolean existsByUserId(Long userId);
 }
