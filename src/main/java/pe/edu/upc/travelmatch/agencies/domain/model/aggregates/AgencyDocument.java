@@ -1,7 +1,7 @@
 package pe.edu.upc.travelmatch.agencies.domain.model.aggregates;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,11 +21,11 @@ public class AgencyDocument extends AbstractAggregateRoot<AgencyDocument> {
     @JoinColumn(name = "agency_id", nullable = false)
     private Agency agency;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private String documentType;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private String documentUrl;
 

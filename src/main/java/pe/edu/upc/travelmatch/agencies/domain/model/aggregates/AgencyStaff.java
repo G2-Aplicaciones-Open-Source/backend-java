@@ -2,7 +2,7 @@ package pe.edu.upc.travelmatch.agencies.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,25 +23,25 @@ public class AgencyStaff extends AbstractAggregateRoot<AgencyStaff> {
     @JoinColumn(name = "agency_id", nullable = false)
     private Agency agency;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private String firstName;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private String lastName;
 
-    @NotBlank
+    @NotNull
     @Email
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank
+    @NotNull
     @Pattern(regexp = "\\d{9}", message = "Phone must be 9 digits")
     @Column(nullable = false)
     private String phone;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private String position;
 
