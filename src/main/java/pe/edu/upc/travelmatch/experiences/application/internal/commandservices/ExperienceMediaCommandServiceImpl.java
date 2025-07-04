@@ -23,13 +23,11 @@ public class ExperienceMediaCommandServiceImpl implements ExperienceMediaCommand
 
     @Override
     public Long handle(CreateExperienceMediaCommand command) {
-        // Validar que la experiencia exista
-        if (!experienceRepository.existsById(command.experienceId())) {
-            throw new IllegalArgumentException("Experience with ID " + command.experienceId() + " does not exist.");
-        }
+        var experience = experienceRepository.findById(command.experience().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Experience with ID " + command.experience().getId() + " does not exist."));
 
         var media = new ExperienceMedia(
-                command.experienceId(),
+                experience,
                 command.mediaUrl(),
                 command.caption()
         );
@@ -37,6 +35,7 @@ public class ExperienceMediaCommandServiceImpl implements ExperienceMediaCommand
         var saved = mediaRepository.save(media);
         return saved.getId();
     }
+
     @Override
     public Optional<ExperienceMedia> handle(UpdateExperienceMediaCommand command) {
         return mediaRepository.findById(command.id()).map(media -> {

@@ -13,6 +13,7 @@ public class ExperienceCommandServiceImpl implements ExperienceCommandService {
 
     private final ExperienceRepository experienceRepository;
     private final ExternalIamService externalIamService;
+
     public ExperienceCommandServiceImpl(ExperienceRepository experienceRepository,
                                         ExternalIamService externalIamService) {
         this.experienceRepository = experienceRepository;
@@ -21,20 +22,20 @@ public class ExperienceCommandServiceImpl implements ExperienceCommandService {
 
     @Override
     public Long handle(CreateExperienceCommand command) {
-        externalIamService.validateAgencyExists(command.agencyId());
+        externalIamService.validateAgencyExists(command.agencyId().value());
 
         var experience = new Experience(
                 command.title(),
                 command.description(),
                 command.agencyId(),
-                command.categoryId(),
+                command.category(),
                 command.destinationId(),
                 command.duration(),
                 command.meetingPoint()
         );
 
         var saved = experienceRepository.save(experience);
-        return saved.getId(); // O saved.getExperienceId().value() si usas VO
+        return saved.getExperienceId().value();
     }
 
     @Override
@@ -48,13 +49,13 @@ public class ExperienceCommandServiceImpl implements ExperienceCommandService {
 
     @Override
     public void updateExperience(UpdateExperienceCommand command) {
-        var experience = experienceRepository.findById(command.experienceId())
+        var experience = experienceRepository.findById(command.id())
                 .orElseThrow(() -> new RuntimeException("Experience not found"));
 
         experience.updateInfo(
                 command.title(),
                 command.description(),
-                command.categoryId(),
+                command.category(),
                 command.destinationId(),
                 command.duration(),
                 command.meetingPoint()
@@ -62,5 +63,4 @@ public class ExperienceCommandServiceImpl implements ExperienceCommandService {
 
         experienceRepository.save(experience);
     }
-
 }

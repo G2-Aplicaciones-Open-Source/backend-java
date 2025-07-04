@@ -9,9 +9,9 @@ public class ExperienceResourceFromEntityAssembler {
                 entity.getExperienceId().value(),
                 entity.getTitle(),
                 entity.getDescription(),
-                entity.getAgencyId(),
-                entity.getCategoryId(),
-                entity.getDestinationId(),
+                entity.getAgencyId().value(),
+                entity.getCategory().getCode(),
+                entity.getDestinationId().value(),
                 entity.getDuration(),
                 entity.getMeetingPoint()
         );

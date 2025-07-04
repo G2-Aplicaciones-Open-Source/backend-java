@@ -3,6 +3,7 @@ package pe.edu.upc.travelmatch.experiences.domain.model.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pe.edu.upc.travelmatch.experiences.domain.model.aggregates.Experience;
 import pe.edu.upc.travelmatch.shared.domain.model.entities.AuditableModel;
 
 import java.util.Date;
@@ -17,9 +18,9 @@ public class ExperienceMedia extends AuditableModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Column(name = "experience_id", nullable = false)
-    private Long experienceId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "experience_id", nullable = false)
+    private Experience experience;
 
     @Getter
     @Column(name = "media_url", nullable = false, length = 256)
@@ -33,8 +34,8 @@ public class ExperienceMedia extends AuditableModel {
     @Column(name = "deleted_at")
     private Date deletedAt;
 
-    public ExperienceMedia(Long experienceId, String mediaUrl, String caption) {
-        this.experienceId = experienceId;
+    public ExperienceMedia(Experience experience, String mediaUrl, String caption) {
+        this.experience = experience;
         this.mediaUrl = mediaUrl;
         this.caption = caption;
     }
@@ -46,5 +47,9 @@ public class ExperienceMedia extends AuditableModel {
 
     public void markAsDeleted() {
         this.deletedAt = new Date();
+    }
+
+    public Experience getExperience() {
+        return experience;
     }
 }
