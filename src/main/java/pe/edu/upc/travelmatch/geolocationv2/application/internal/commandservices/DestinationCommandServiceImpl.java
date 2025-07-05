@@ -45,7 +45,7 @@ public class DestinationCommandServiceImpl implements DestinationCommandService 
             throw new IllegalArgumentException("Destination with id " + destinationId + " does not exist");
         }
         var destinationToUpdate = this.destinationRepository.findById(destinationId).get();
-        destinationToUpdate.updateInformation(command.name(), command.address(), command.district(), command.state(), command.country());
+        destinationToUpdate.updateInformation(command.name(), command.address(), command.district(), command.city(), command.state(), command.country());
 
         try {
             var updatedDestination = this.destinationRepository.save(destinationToUpdate);
