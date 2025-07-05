@@ -5,6 +5,10 @@ import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.UpdateExperi
 
 public class UpdateExperienceMediaCommandFromResourceAssembler {
     public static UpdateExperienceMediaCommand toCommandFromResource(Long id, UpdateExperienceMediaResource resource) {
-        return new UpdateExperienceMediaCommand(id, resource.mediaUrl(), resource.caption());
+        return new UpdateExperienceMediaCommand(
+                id,
+                resource.mediaUrl(),
+                resource.caption()
+        );
     }
 }

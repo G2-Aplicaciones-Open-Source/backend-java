@@ -1,11 +1,13 @@
 package pe.edu.upc.travelmatch.experiences.domain.model.commands;
 
+import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.*;
+
 public record UpdateExperienceCommand(
-        Long experienceId,
+        Long id,
         String title,
         String description,
-        Long categoryId,
-        Long destinationId,
+        Category category,
+        DestinationId destinationId,
         String duration,
         String meetingPoint
 ) {}

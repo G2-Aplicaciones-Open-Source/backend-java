@@ -21,21 +21,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST})
+
 @RestController
 @RequestMapping(value = "/api/v1/experiences")
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 @Tag(name = "Experiences", description = "Experiences Management Endpoints")
 public class ExperiencesController {
 
     private final ExperienceCommandService commandService;
     private final ExperienceQueryService queryService;
 
-    public ExperiencesController(ExperienceCommandService commandService, ExperienceQueryService queryService) {
+    public ExperiencesController(
+            ExperienceCommandService commandService,
+            ExperienceQueryService queryService
+    ) {
         this.commandService = commandService;
         this.queryService = queryService;
     }
-
-
 
     @Operation(
             summary = "Create a new experience",
@@ -50,18 +52,16 @@ public class ExperiencesController {
             @PathVariable Long agencyId,
             @RequestBody CreateExperienceResource resource
     ) {
-        // Usamos agencyId del path en lugar del que venga en el body
-        CreateExperienceCommand command =
-                CreateExperienceCommandFromResourceAssembler.toCommandFromResource(resource, agencyId);
+        var command = CreateExperienceCommandFromResourceAssembler
+                .toCommandFromResource(resource, agencyId);
 
         Long id = commandService.handle(command);
-        Optional<ExperienceResource> created = queryService
-                .handle(new GetExperienceByIdQuery(id))
-                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity);
 
-        return created.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
+        return queryService.handle(new GetExperienceByIdQuery(id))
+                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
-
 
     @Operation(
             summary = "Get all experiences",
@@ -72,15 +72,13 @@ public class ExperiencesController {
     )
     @GetMapping
     public ResponseEntity<List<ExperienceResource>> getAllExperiences() {
-        var query = new GetAllExperiencesQuery();
-        var result = queryService.handle(query);
+        var result = queryService.handle(new GetAllExperiencesQuery());
         var resources = result.stream()
                 .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(resources);
     }
-
 
     @Operation(
             summary = "Update an experience",
@@ -98,12 +96,11 @@ public class ExperiencesController {
         var command = UpdateExperienceCommandFromResourceAssembler.toCommandFromResource(resource, experienceId);
         commandService.updateExperience(command);
 
-        var updated = queryService.handle(new GetExperienceByIdQuery(experienceId))
-                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity);
-
-        return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return queryService.handle(new GetExperienceByIdQuery(experienceId))
+                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 
     @Operation(
             summary = "Delete an experience",
@@ -116,5 +113,21 @@ public class ExperiencesController {
     public ResponseEntity<Void> deleteExperience(@PathVariable Long experienceId) {
         commandService.deleteExperience(experienceId);
         return ResponseEntity.noContent().build();
+    }
+    @Operation(
+            summary = "Get experience by ID",
+            description = "Retrieves a single experience by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Experience found"),
+                    @ApiResponse(responseCode = "404", description = "Experience not found")
+            }
+    )
+    @GetMapping("/{experienceId}")
+    public ResponseEntity<ExperienceResource> getExperienceById(@PathVariable Long experienceId) {
+        var result = queryService.handle(new GetExperienceByIdQuery(experienceId))
+                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity);
+
+        return result.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

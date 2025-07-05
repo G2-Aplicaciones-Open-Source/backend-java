@@ -11,6 +11,7 @@ import pe.edu.upc.travelmatch.experiences.domain.model.commands.CreateExperience
 import pe.edu.upc.travelmatch.experiences.domain.model.commands.UpdateExperienceMediaCommand;
 import pe.edu.upc.travelmatch.experiences.domain.services.ExperienceMediaCommandService;
 import pe.edu.upc.travelmatch.experiences.domain.services.ExperienceMediaQueryService;
+import pe.edu.upc.travelmatch.experiences.infrastructure.persistence.jpa.repositories.ExperienceRepository;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.CreateExperienceMediaResource;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.ExperienceMediaResource;
@@ -27,12 +28,17 @@ public class ExperienceMediaController {
 
     private final ExperienceMediaCommandService commandService;
     private final ExperienceMediaQueryService queryService;
+    private final ExperienceRepository experienceRepository;
 
-    public ExperienceMediaController(ExperienceMediaCommandService commandService, ExperienceMediaQueryService queryService) {
+    public ExperienceMediaController(
+            ExperienceMediaCommandService commandService,
+            ExperienceMediaQueryService queryService,
+            ExperienceRepository experienceRepository
+    ) {
         this.commandService = commandService;
         this.queryService = queryService;
+        this.experienceRepository = experienceRepository;
     }
-
 
     @Operation(
             summary = "Create media for an experience",
@@ -47,13 +53,15 @@ public class ExperienceMediaController {
             @PathVariable Long experienceId,
             @RequestBody CreateExperienceMediaResource resource
     ) {
+        var experience = experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new RuntimeException("Experience not found"));
+
         var command = CreateExperienceMediaCommandFromResourceAssembler
-                .toCommandFromResource(resource, experienceId);
+                .toCommandFromResource(resource, experience);
 
         var id = commandService.handle(command);
         return ResponseEntity.ok(id);
     }
-
 
     @Operation(
             summary = "Update media file",
@@ -72,7 +80,6 @@ public class ExperienceMediaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
     @Operation(
             summary = "Get all experience media",
             description = "Retrieves all media files from all experiences",
@@ -88,7 +95,6 @@ public class ExperienceMediaController {
         return ResponseEntity.ok(result);
     }
 
-
     @Operation(
             summary = "Get media by experience",
             description = "Fetches all media for a specific experience ID",
@@ -103,7 +109,6 @@ public class ExperienceMediaController {
                 .toList();
         return ResponseEntity.ok(result);
     }
-
 
     @Operation(
             summary = "Delete media by ID",

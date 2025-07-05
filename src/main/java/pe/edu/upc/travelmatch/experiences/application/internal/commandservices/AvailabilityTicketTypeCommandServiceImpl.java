@@ -12,6 +12,7 @@ public class AvailabilityTicketTypeCommandServiceImpl implements AvailabilityTic
 
     private final AvailabilityTicketTypeRepository repository;
     private final AvailabilityRepository availabilityRepository;
+
     public AvailabilityTicketTypeCommandServiceImpl(AvailabilityTicketTypeRepository repository,
                                                     AvailabilityRepository availabilityRepository) {
         this.repository = repository;
@@ -20,17 +21,17 @@ public class AvailabilityTicketTypeCommandServiceImpl implements AvailabilityTic
 
     @Override
     public Long handle(CreateAvailabilityTicketTypeCommand command) {
-        if (!availabilityRepository.existsById(command.availabilityId())) {
-            throw new IllegalArgumentException("Availability with ID " + command.availabilityId() + " does not exist.");
-        }
+        var availability = availabilityRepository.findById(command.availability().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Availability with ID " + command.availability().getId() + " does not exist."));
 
         var ticketType = new AvailabilityTicketType(
-                command.availabilityId(),
+                availability,
                 command.ticketTypeId(),
-                command.ticketType(), // ✅ nuevo parámetro
+                command.ticketType(),
                 command.price(),
                 command.stock()
         );
+
         var saved = repository.save(ticketType);
         return saved.getId();
     }

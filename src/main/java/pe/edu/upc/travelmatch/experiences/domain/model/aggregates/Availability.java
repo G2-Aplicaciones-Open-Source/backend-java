@@ -15,9 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class Availability extends AuditableAbstractAggregateRoot<Availability> {
 
-    @Getter
-    @Column(name = "experience_id", nullable = false)
-    private Long experienceId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "experience_id", nullable = false)
+    private Experience experience;
 
     @Getter
     @Column(name = "start_datetime", nullable = false)
@@ -35,8 +35,8 @@ public class Availability extends AuditableAbstractAggregateRoot<Availability> {
     @Column(name = "deleted_at")
     private Date deletedAt;
 
-    public Availability(Long experienceId, LocalDateTime startDateTime, LocalDateTime endDateTime, int capacity) {
-        this.experienceId = experienceId;
+    public Availability(Experience experience, LocalDateTime startDateTime, LocalDateTime endDateTime, int capacity) {
+        this.experience = experience;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.capacity = capacity;
@@ -50,5 +50,9 @@ public class Availability extends AuditableAbstractAggregateRoot<Availability> {
 
     public void markAsDeleted() {
         this.deletedAt = new Date();
+    }
+
+    public Experience getExperience() {
+        return experience;
     }
 }
