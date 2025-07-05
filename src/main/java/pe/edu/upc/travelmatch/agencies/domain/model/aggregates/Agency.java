@@ -11,7 +11,7 @@ import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAg
 @Getter
 @Setter
 @NoArgsConstructor
-public class Agency extends AuditableAbstractAggregateRoot {
+public class Agency extends AuditableAbstractAggregateRoot<Agency> {
 
     @Embedded
     @AttributeOverrides({
