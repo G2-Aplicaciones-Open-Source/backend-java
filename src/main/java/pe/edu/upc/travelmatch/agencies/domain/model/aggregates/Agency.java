@@ -26,9 +26,6 @@ public class Agency extends AuditableAbstractAggregateRoot<Agency> {
     private String ruc;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
     private String contactEmail;
 
     @Column(nullable = false)
@@ -37,25 +34,21 @@ public class Agency extends AuditableAbstractAggregateRoot<Agency> {
     @Column(nullable = false)
     private Long userId;
 
-    public Agency(AgencyName name, String description, String ruc, String address, String contactEmail, String contactPhone, Long userId) {
+    public Agency(AgencyName name, String description, String ruc, String contactEmail, String contactPhone, Long userId) {
         this.name = name;
         this.description = description;
         this.ruc = ruc;
-        this.address = address;
         this.contactEmail = contactEmail;
         this.contactPhone = contactPhone;
         this.userId = userId;
     }
 
-    public void updateDetails(AgencyName name, String description, String address, String contactEmail, String contactPhone) {
+    public void updateDetails(AgencyName name, String description, String contactEmail, String contactPhone) {
         if (name != null) {
             this.name = name;
         }
         if (description != null) {
             this.description = description;
-        }
-        if (address != null) {
-            this.address = address;
         }
         if (contactEmail != null) {
             this.contactEmail = contactEmail;

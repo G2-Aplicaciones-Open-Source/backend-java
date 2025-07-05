@@ -5,6 +5,11 @@ import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.ExperienceMe
 
 public class ExperienceMediaResourceFromEntityAssembler {
     public static ExperienceMediaResource toResourceFromEntity(ExperienceMedia entity) {
-        return new ExperienceMediaResource(entity.getId(), entity.getExperienceId(), entity.getMediaUrl(), entity.getCaption());
+        return new ExperienceMediaResource(
+                entity.getId(),
+                entity.getExperience().getExperienceId().value(),
+                entity.getMediaUrl(),
+                entity.getCaption()
+        );
     }
 }

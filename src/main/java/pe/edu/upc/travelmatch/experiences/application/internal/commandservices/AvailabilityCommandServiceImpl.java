@@ -24,12 +24,11 @@ public class AvailabilityCommandServiceImpl implements AvailabilityCommandServic
 
     @Override
     public Long handle(CreateAvailabilityCommand command) {
-        if (!experienceRepository.existsById(command.experienceId())) {
-            throw new IllegalArgumentException("Experience with ID " + command.experienceId() + " does not exist.");
-        }
+        var experience = experienceRepository.findById(command.experience().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Experience with ID " + command.experience().getId() + " does not exist."));
 
         var availability = new Availability(
-                command.experienceId(),
+                experience,
                 command.startDateTime(),
                 command.endDateTime(),
                 command.capacity()

@@ -12,6 +12,8 @@ import pe.edu.upc.travelmatch.experiences.domain.model.commands.UpdateAvailabili
 import pe.edu.upc.travelmatch.experiences.domain.services.AvailabilityCommandService;
 import pe.edu.upc.travelmatch.experiences.domain.services.AvailabilityQueryService;
 import pe.edu.upc.travelmatch.experiences.domain.services.AvailabilityTicketTypeCommandService;
+import pe.edu.upc.travelmatch.experiences.infrastructure.persistence.jpa.repositories.AvailabilityRepository;
+import pe.edu.upc.travelmatch.experiences.infrastructure.persistence.jpa.repositories.ExperienceRepository;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.*;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.transform.*;
 
@@ -26,16 +28,23 @@ public class AvailabilitiesController {
     private final AvailabilityCommandService availabilityCommandService;
     private final AvailabilityQueryService availabilityQueryService;
     private final AvailabilityTicketTypeCommandService availabilityTicketTypeCommandService;
+    private final ExperienceRepository experienceRepository;
+    private final AvailabilityRepository availabilityRepository;
 
     public AvailabilitiesController(
             AvailabilityCommandService availabilityCommandService,
             AvailabilityQueryService availabilityQueryService,
-            AvailabilityTicketTypeCommandService availabilityTicketTypeCommandService
+            AvailabilityTicketTypeCommandService availabilityTicketTypeCommandService,
+            ExperienceRepository experienceRepository,
+            AvailabilityRepository availabilityRepository
     ) {
         this.availabilityCommandService = availabilityCommandService;
         this.availabilityQueryService = availabilityQueryService;
         this.availabilityTicketTypeCommandService = availabilityTicketTypeCommandService;
+        this.experienceRepository = experienceRepository;
+        this.availabilityRepository = availabilityRepository;
     }
+
     @Operation(
             summary = "Create availability for an experience",
             description = "Creates a new availability entry for a given experience",
@@ -49,8 +58,11 @@ public class AvailabilitiesController {
             @PathVariable Long experienceId,
             @RequestBody CreateAvailabilityResource resource
     ) {
+        var experience = experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new RuntimeException("Experience not found"));
+
         CreateAvailabilityCommand command = new CreateAvailabilityCommand(
-                experienceId,
+                experience,
                 resource.startDateTime(),
                 resource.endDateTime(),
                 resource.capacity()
@@ -58,7 +70,6 @@ public class AvailabilitiesController {
         Long id = availabilityCommandService.handle(command);
         return ResponseEntity.ok(id);
     }
-
 
     @Operation(
             summary = "Update availability",
@@ -83,7 +94,6 @@ public class AvailabilitiesController {
         return ResponseEntity.noContent().build();
     }
 
-
     @Operation(
             summary = "Delete availability",
             description = "Deletes a specific availability by ID",
@@ -96,7 +106,6 @@ public class AvailabilitiesController {
         availabilityCommandService.deleteAvailability(availabilityId);
         return ResponseEntity.noContent().build();
     }
-
 
     @Operation(
             summary = "Get all availabilities",
@@ -114,7 +123,6 @@ public class AvailabilitiesController {
         return ResponseEntity.ok(result);
     }
 
-
     @Operation(
             summary = "Create a ticket type for an availability",
             description = "Registers a new ticket type under a specific availability",
@@ -124,10 +132,15 @@ public class AvailabilitiesController {
     )
     @PostMapping("/availabilities/{availabilityId}/ticket-types")
     public ResponseEntity<Long> createTicketTypeForAvailability(
+            @PathVariable Long availabilityId,
             @RequestBody CreateAvailabilityTicketTypeResource resource
     ) {
-        CreateAvailabilityTicketTypeCommand command = CreateAvailabilityTicketTypeCommandFromResourceAssembler
-                .toCommandFromResource(resource);
+        var availability = availabilityRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Availability not found"));
+
+        CreateAvailabilityTicketTypeCommand command =
+                CreateAvailabilityTicketTypeCommandFromResourceAssembler.toCommandFromResource(resource, availability);
+
         Long id = availabilityTicketTypeCommandService.handle(command);
         return ResponseEntity.ok(id);
     }
