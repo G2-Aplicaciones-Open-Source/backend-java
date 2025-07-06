@@ -6,9 +6,11 @@ import pe.edu.upc.travelmatch.profiles.application.internal.outboundservices.acl
 import pe.edu.upc.travelmatch.profiles.domain.model.aggregates.Cart;
 import pe.edu.upc.travelmatch.profiles.domain.model.commands.*;
 import pe.edu.upc.travelmatch.profiles.domain.model.entities.CartItem;
+import pe.edu.upc.travelmatch.profiles.domain.model.valueobjects.Money;
 import pe.edu.upc.travelmatch.profiles.domain.services.CartCommandService;
 import pe.edu.upc.travelmatch.profiles.infrastructure.persistence.jpa.repositories.CartRepository;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -51,8 +53,9 @@ public class CartCommandServiceImpl implements CartCommandService {
 //        if (!externalExperiencesService.existsExperienceById(command.availabilityId().experienceId())) {
 //            throw new IllegalArgumentException("The provided availability ID does not link to a valid experience.");
 //        }
-
-        CartItem newItem = new CartItem(command.availabilityId(), command.quantity(), command.price());
+        // Price value should be retrieved from Experiences BC via ACL
+        Money price = new Money(new BigDecimal(10),"PEN");
+        CartItem newItem = new CartItem(command.availabilityId(), command.quantity(), price);
         cart.get().addItem(newItem);
         cartRepository.save(cart.get());
         return Optional.of(newItem);
