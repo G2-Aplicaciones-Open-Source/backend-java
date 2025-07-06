@@ -1,15 +1,11 @@
 package pe.edu.upc.travelmatch.bookings.interfaces.rest.resources;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
-public record BookingResource(
-        Long id,
+public record CreateBookingResource(
         Long userId,
         Long availabilityId,
+        Long ticketTypeId,
         int quantity,
-        String currency,
-        BigDecimal totalAmount,
-        String bookingStatus,
         Instant bookingDate
 ) { }
