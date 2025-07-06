@@ -10,6 +10,7 @@ public class DestinationResourceFromEntityAssembler {
             entity.getName().name(),
             entity.getAddress().address(),
             entity.getDistrict().district(),
+            entity.getCity().city(),
             entity.getState().state(),
             entity.getCountry().country());
     }

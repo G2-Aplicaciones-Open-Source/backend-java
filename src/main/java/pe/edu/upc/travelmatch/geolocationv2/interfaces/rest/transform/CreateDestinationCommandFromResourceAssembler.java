@@ -10,6 +10,7 @@ public class CreateDestinationCommandFromResourceAssembler {
                 resource.name(),
                 resource.address(),
                 resource.district(),
+                resource.city(),
                 resource.state(),
                 resource.country()
         );
