@@ -1,7 +1,6 @@
 package pe.edu.upc.travelmatch.experiences.interfaces.rest.transform;
 
 import pe.edu.upc.travelmatch.experiences.domain.model.commands.UpdateExperienceCommand;
-import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.Category;
 import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.DestinationId;
 import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.UpdateExperienceResource;
 
@@ -11,7 +10,7 @@ public class UpdateExperienceCommandFromResourceAssembler {
                 id,
                 resource.title(),
                 resource.description(),
-                Category.valueOf(resource.category()),
+                resource.category(),
                 new DestinationId(resource.destinationId()),
                 resource.duration(),
                 resource.meetingPoint()
