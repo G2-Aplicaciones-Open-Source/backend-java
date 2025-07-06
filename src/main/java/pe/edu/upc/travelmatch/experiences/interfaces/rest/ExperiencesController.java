@@ -3,6 +3,7 @@ package pe.edu.upc.travelmatch.experiences.interfaces.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.travelmatch.experiences.domain.model.commands.CreateExperienceCommand;
@@ -55,12 +56,15 @@ public class ExperiencesController {
         var command = CreateExperienceCommandFromResourceAssembler
                 .toCommandFromResource(resource, agencyId);
 
-        Long id = commandService.handle(command);
+        var id = commandService.handle(command);
+        var getExperienceByIdQuery = new GetExperienceByIdQuery(id);
+        var experience = queryService.handle(getExperienceByIdQuery);
+        if(experience.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        return queryService.handle(new GetExperienceByIdQuery(id))
-                .map(ExperienceResourceFromEntityAssembler::toResourceFromEntity)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+        var experienceResource = ExperienceResourceFromEntityAssembler.toResourceFromEntity(experience.get());
+        return new ResponseEntity<>(experienceResource, HttpStatus.CREATED);
     }
 
     @Operation(
