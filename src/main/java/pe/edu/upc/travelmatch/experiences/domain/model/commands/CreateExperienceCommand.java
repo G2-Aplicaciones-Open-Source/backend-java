@@ -5,8 +5,8 @@ import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.*;
 public record CreateExperienceCommand(
         String title,
         String description,
-        AgencyId agencyId,
-        Category category,
+        Long agencyId,
+        String category,
         DestinationId destinationId,
         String duration,
         String meetingPoint

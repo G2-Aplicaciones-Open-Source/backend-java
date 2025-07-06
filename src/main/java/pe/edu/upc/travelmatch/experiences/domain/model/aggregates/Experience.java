@@ -1,54 +1,46 @@
 package pe.edu.upc.travelmatch.experiences.domain.model.aggregates;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pe.edu.upc.travelmatch.experiences.domain.model.entities.Category;
 import pe.edu.upc.travelmatch.experiences.domain.model.entities.ExperienceMedia;
 import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.*;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
-@Table(name = "experiences")
+@Getter
 @NoArgsConstructor
 public class Experience extends AuditableAbstractAggregateRoot<Experience> {
 
-    @Getter
-    @Column(nullable = false, length = 100)
+    @NotBlank
+    @Column(nullable = false)
+    @Size(min = 5, max = 100)
     private String title;
 
-    @Getter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Embedded
-    @Getter
     @AttributeOverride(name = "value", column = @Column(name = "agency_id", nullable = false))
     private AgencyId agencyId;
 
-    @Getter
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Embedded
-    @Getter
     @AttributeOverride(name = "value", column = @Column(name = "destination_id", nullable = false))
     private DestinationId destinationId;
 
-    @Getter
-    @Column(columnDefinition = "TEXT")
     private String duration;
 
-    @Getter
-    @Column(name = "meeting_point", columnDefinition = "TEXT")
     private String meetingPoint;
 
-    @Getter
-    @Column(name = "deleted_at")
     private Date deletedAt;
 
     @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,8 +49,8 @@ public class Experience extends AuditableAbstractAggregateRoot<Experience> {
     @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExperienceMedia> media = new ArrayList<>();
 
-    public Experience(String title, String description, AgencyId agencyId, Category category,
-                      DestinationId destinationId, String duration, String meetingPoint) {
+    public Experience(String title, String description, AgencyId agencyId, Category category, DestinationId destinationId,
+                      String duration, String meetingPoint) {
         this.title = title;
         this.description = description;
         this.agencyId = agencyId;
@@ -66,10 +58,6 @@ public class Experience extends AuditableAbstractAggregateRoot<Experience> {
         this.destinationId = destinationId;
         this.duration = duration;
         this.meetingPoint = meetingPoint;
-    }
-
-    public ExperienceId getExperienceId() {
-        return new ExperienceId(getId());
     }
 
     public void markAsDeleted() {

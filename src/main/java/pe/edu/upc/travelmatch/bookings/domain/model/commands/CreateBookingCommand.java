@@ -5,6 +5,7 @@ import java.time.Instant;
 public record CreateBookingCommand(
         Long userId,
         Long availabilityId,
+        Long ticketTypeId,
         int quantity,
         Instant bookingDate
 ) { }

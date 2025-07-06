@@ -6,7 +6,7 @@ public record UpdateExperienceCommand(
         Long id,
         String title,
         String description,
-        Category category,
+        String category,
         DestinationId destinationId,
         String duration,
         String meetingPoint

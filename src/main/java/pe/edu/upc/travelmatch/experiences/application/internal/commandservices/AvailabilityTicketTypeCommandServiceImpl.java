@@ -2,37 +2,32 @@ package pe.edu.upc.travelmatch.experiences.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.travelmatch.experiences.domain.model.commands.CreateAvailabilityTicketTypeCommand;
-import pe.edu.upc.travelmatch.experiences.domain.model.entities.AvailabilityTicketType;
 import pe.edu.upc.travelmatch.experiences.domain.services.AvailabilityTicketTypeCommandService;
 import pe.edu.upc.travelmatch.experiences.infrastructure.persistence.jpa.repositories.AvailabilityRepository;
-import pe.edu.upc.travelmatch.experiences.infrastructure.persistence.jpa.repositories.AvailabilityTicketTypeRepository;
+import pe.edu.upc.travelmatch.experiences.infrastructure.persistence.jpa.repositories.TicketTypeRepository;
 
 @Service
 public class AvailabilityTicketTypeCommandServiceImpl implements AvailabilityTicketTypeCommandService {
 
-    private final AvailabilityTicketTypeRepository repository;
+    private final TicketTypeRepository ticketTypeRepository;
     private final AvailabilityRepository availabilityRepository;
 
-    public AvailabilityTicketTypeCommandServiceImpl(AvailabilityTicketTypeRepository repository,
+    public AvailabilityTicketTypeCommandServiceImpl(TicketTypeRepository ticketTypeRepository,
                                                     AvailabilityRepository availabilityRepository) {
-        this.repository = repository;
+        this.ticketTypeRepository = ticketTypeRepository;
         this.availabilityRepository = availabilityRepository;
     }
 
     @Override
     public Long handle(CreateAvailabilityTicketTypeCommand command) {
-        var availability = availabilityRepository.findById(command.availability().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Availability with ID " + command.availability().getId() + " does not exist."));
+        var availability = availabilityRepository.findById(command.availabilityId())
+                .orElseThrow(() -> new IllegalArgumentException("Availability with ID " + command.availabilityId() + " does not exist."));
 
-        var ticketType = new AvailabilityTicketType(
-                availability,
-                command.ticketTypeId(),
-                command.ticketType(),
-                command.price(),
-                command.stock()
-        );
+        var ticketType = ticketTypeRepository.findById(command.ticketTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("TicketType not found with ID: " + command.ticketTypeId()));
 
-        var saved = repository.save(ticketType);
-        return saved.getId();
+        availability.addTicketType(ticketType, command.price(), command.stock());
+        availabilityRepository.save(availability);
+        return availability.getId();
     }
 }

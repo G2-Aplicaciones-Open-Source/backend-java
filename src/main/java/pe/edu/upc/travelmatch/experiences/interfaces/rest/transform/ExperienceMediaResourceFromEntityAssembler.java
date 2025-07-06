@@ -7,7 +7,7 @@ public class ExperienceMediaResourceFromEntityAssembler {
     public static ExperienceMediaResource toResourceFromEntity(ExperienceMedia entity) {
         return new ExperienceMediaResource(
                 entity.getId(),
-                entity.getExperience().getExperienceId().value(),
+                entity.getExperience().getId(),
                 entity.getMediaUrl(),
                 entity.getCaption()
         );
