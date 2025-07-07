@@ -77,5 +77,25 @@ public class BookingsController {
         }
     }
 
+    @PostMapping("/{bookingId}/payments/initiate")
+    public ResponseEntity<String> initiatePayment(
+            @PathVariable Long bookingId,
+            @RequestBody InitiatePaymentResource resource) {
 
+        if (!bookingId.equals(resource.bookingId())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        var command = InitiatePaymentCommandFromResourceAssembler.toCommandFromResource(resource);
+        var clientSecret = bookingCommandService.handle(command);
+
+        return ResponseEntity.ok(clientSecret);
+    }
+
+    @PostMapping("/fail-payment")
+    public ResponseEntity<?> failPayment(@RequestBody FailPaymentResource resource) {
+        var command = FailPaymentCommandFromResourceAssembler.toCommandFromResource(resource);
+        var success = bookingCommandService.handle(command);
+        return success ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+    }
 }
