@@ -1,6 +1,6 @@
 package pe.edu.upc.travelmatch.bookings.domain.model.commands;
 
-public record FailPaymentCommand(
+public record InitiatePaymentCommand(
         Long bookingId,
-        String reason
-) { }
+        String paymentMethod
+) {}

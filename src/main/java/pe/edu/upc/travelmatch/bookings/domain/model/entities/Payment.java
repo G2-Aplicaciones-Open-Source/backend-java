@@ -6,6 +6,7 @@ import lombok.Setter;
 import pe.edu.upc.travelmatch.bookings.domain.model.aggregates.Booking;
 import pe.edu.upc.travelmatch.bookings.domain.model.valueobjects.Money;
 import pe.edu.upc.travelmatch.bookings.domain.model.valueobjects.PaymentStatus;
+import pe.edu.upc.travelmatch.bookings.domain.model.valueobjects.TransactionId;
 import pe.edu.upc.travelmatch.shared.domain.model.entities.AuditableModel;
 
 import java.time.Instant;
@@ -31,6 +32,9 @@ public class Payment extends AuditableModel {
 
     private String paymentMethod;
 
+    @Embedded
+    private TransactionId transactionId;
+
     private PaymentStatus paymentStatus;
 
     private Instant paymentDate;
@@ -39,9 +43,10 @@ public class Payment extends AuditableModel {
         this.paymentStatus = PaymentStatus.PENDING;
     }
 
-    public Payment(Money paymentMoney, String paymentMethod, PaymentStatus paymentStatus, Instant paymentDate) {
+    public Payment(Money paymentMoney, String paymentMethod, TransactionId transactionId, PaymentStatus paymentStatus, Instant paymentDate) {
         this.paymentMoney = paymentMoney;
         this.paymentMethod = paymentMethod;
+        this.transactionId = transactionId;
         this.paymentStatus = paymentStatus;
         this.paymentDate = paymentDate;
     }
