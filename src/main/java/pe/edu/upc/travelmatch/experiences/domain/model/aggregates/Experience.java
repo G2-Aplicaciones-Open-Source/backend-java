@@ -1,73 +1,76 @@
 package pe.edu.upc.travelmatch.experiences.domain.model.aggregates;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pe.edu.upc.travelmatch.experiences.domain.model.entities.Category;
+import pe.edu.upc.travelmatch.experiences.domain.model.entities.ExperienceMedia;
 import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.*;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import java.util.Date;
+
+import java.util.*;
+
 @Entity
-@Table(name = "experiences")
+@Getter
 @NoArgsConstructor
 public class Experience extends AuditableAbstractAggregateRoot<Experience> {
 
-    @Getter
-    @Column(nullable = false, length = 100)
+    @NotBlank
+    @Column(nullable = false)
+    @Size(min = 5, max = 100)
     private String title;
 
-    @Getter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Getter
-    @Column(nullable = false)
-    private Long agencyId;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "agency_id", nullable = false))
+    private AgencyId agencyId;
 
-    @Getter
-    @Column(nullable = false)
-    private Long categoryId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-    @Getter
-    @Column(nullable = false)
-    private Long destinationId;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "destination_id", nullable = false))
+    private DestinationId destinationId;
 
-    @Getter
-    @Column(columnDefinition = "TEXT")
     private String duration;
 
-    @Getter
-    @Column(name = "meeting_point", columnDefinition = "TEXT")
     private String meetingPoint;
 
-    @Getter
-    @Column(name = "deleted_at")
     private Date deletedAt;
-    public void markAsDeleted() {
-        this.deletedAt = new Date();
-    }
-    public Experience(String title, String description, Long agencyId, Long categoryId,
-                      Long destinationId, String duration, String meetingPoint) {
+
+    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Availability> availabilities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExperienceMedia> media = new ArrayList<>();
+
+    public Experience(String title, String description, AgencyId agencyId, Category category, DestinationId destinationId,
+                      String duration, String meetingPoint) {
         this.title = title;
         this.description = description;
         this.agencyId = agencyId;
-        this.categoryId = categoryId;
+        this.category = category;
         this.destinationId = destinationId;
         this.duration = duration;
         this.meetingPoint = meetingPoint;
     }
 
-    public ExperienceId getExperienceId() {
-        return new ExperienceId(getId());
+    public void markAsDeleted() {
+        this.deletedAt = new Date();
     }
 
-    public void updateInfo(String title, String description, Long categoryId, Long destinationId,
+    public void updateInfo(String title, String description, Category category, DestinationId destinationId,
                            String duration, String meetingPoint) {
         this.title = title;
         this.description = description;
-        this.categoryId = categoryId;
+        this.category = category;
         this.destinationId = destinationId;
         this.duration = duration;
         this.meetingPoint = meetingPoint;
     }
-
 }

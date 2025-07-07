@@ -38,6 +38,14 @@ public class Destination extends AuditableAbstractAggregateRoot<Destination> {
     @Getter
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "city", column = @Column(name = "city", length = 50, nullable = false))
+    })
+    private City city;
+
+
+    @Getter
+    @Embedded
+    @AttributeOverrides({
             @AttributeOverride(name = "state", column = @Column(name = "state", length = 50, nullable = false))
     })
     private State state;
@@ -53,10 +61,11 @@ public class Destination extends AuditableAbstractAggregateRoot<Destination> {
     // Constructores
     public Destination() {}
 
-    public Destination(String name, String address, String district, String state, String country) {
+    public Destination(String name, String address, String district, String city, String state, String country) {
         this.name = new DestinationName(name);
         this.address = new DestinationAddress(address);
         this.district = new District(district);
+        this.city = new City(city);
         this.state = new State(state);
         this.country = new Country(country);
     }
@@ -66,14 +75,16 @@ public class Destination extends AuditableAbstractAggregateRoot<Destination> {
         this.name = new DestinationName(command.name());
         this.address = new DestinationAddress(command.address());
         this.district = new District(command.district());
+        this.city = new City(command.city());
         this.state = new State(command.state());
         this.country = new Country(command.country());
     }
 
-    public Destination updateInformation(String name, String address, String district, String state, String country) {
+    public Destination updateInformation(String name, String address, String district, String city, String state, String country) {
         this.name = new DestinationName(name);
         this.address = new DestinationAddress(address);
         this.district = new District(district);
+        this.city = new City(city);
         this.state = new State(state);
         this.country = new Country(country);
         return this;

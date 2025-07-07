@@ -74,7 +74,6 @@ public class AgencyController {
                     agencyId,
                     resource.name(),
                     resource.description(),
-                    resource.address(),
                     resource.contactEmail(),
                     resource.contactPhone()
             );

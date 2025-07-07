@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public record CreateAvailabilityTicketTypeResource(
         Long availabilityId,
         Long ticketTypeId,
-        String ticketType, // se envía como texto
+        String ticketType, // ya está correcto
         BigDecimal price,
         int stock
 ) {}

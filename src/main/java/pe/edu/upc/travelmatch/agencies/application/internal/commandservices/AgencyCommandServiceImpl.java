@@ -40,7 +40,7 @@ public class AgencyCommandServiceImpl implements AgencyCommandService {
         }
 
         var agencyName = new AgencyName(command.name());
-        var agency = new Agency(agencyName, command.description(), command.ruc(), command.address(), command.contactEmail(), command.contactPhone(), command.userId());
+        var agency = new Agency(agencyName, command.description(), command.ruc(), command.contactEmail(), command.contactPhone(), command.userId());
         agencyRepository.save(agency);
         return agency.getId();
     }
@@ -60,7 +60,7 @@ public class AgencyCommandServiceImpl implements AgencyCommandService {
         }
 
         AgencyName updatedName = command.name() != null ? new AgencyName(command.name()) : null;
-        agencyToUpdate.updateDetails(updatedName, command.description(), command.address(), command.contactEmail(), command.contactPhone());
+        agencyToUpdate.updateDetails(updatedName, command.description(), command.contactEmail(), command.contactPhone());
         agencyRepository.save(agencyToUpdate);
         return agencyToUpdate;
     }

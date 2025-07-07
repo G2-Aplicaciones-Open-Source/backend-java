@@ -7,7 +7,7 @@ public class AvailabilityResourceFromEntityAssembler {
     public static AvailabilityResource toResourceFromEntity(Availability entity) {
         return new AvailabilityResource(
                 entity.getId(),
-                entity.getExperienceId(),
+                entity.getExperience().getId(),
                 entity.getStartDateTime(),
                 entity.getEndDateTime(),
                 entity.getCapacity()

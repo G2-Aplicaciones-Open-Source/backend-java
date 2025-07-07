@@ -12,8 +12,7 @@ public class AddCartItemCommandFromResourceAssembler {
         return new AddCartItemCommand(
                 new UserId(userId),
                 new AvailabilityId(resource.availabilityId()),
-                new Quantity(resource.quantity()),
-                new Money(resource.price(), "PEN")
+                new Quantity(resource.quantity())
         );
     }
 }

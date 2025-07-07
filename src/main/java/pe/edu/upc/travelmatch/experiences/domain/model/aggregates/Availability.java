@@ -2,45 +2,82 @@ package pe.edu.upc.travelmatch.experiences.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import pe.edu.upc.travelmatch.experiences.domain.model.valueobjects.ExperienceId;
+import pe.edu.upc.travelmatch.experiences.domain.model.entities.AvailabilityTicketType;
+import pe.edu.upc.travelmatch.experiences.domain.model.entities.TicketType;
 import pe.edu.upc.travelmatch.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "availabilities")
-@NoArgsConstructor
 public class Availability extends AuditableAbstractAggregateRoot<Availability> {
 
     @Getter
-    @Column(name = "experience_id", nullable = false)
-    private Long experienceId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "experience_id", nullable = false)
+    private Experience experience;
 
     @Getter
-    @Column(name = "start_datetime", nullable = false)
     private LocalDateTime startDateTime;
 
     @Getter
-    @Column(name = "end_datetime", nullable = false)
     private LocalDateTime endDateTime;
 
     @Getter
-    @Column(nullable = false)
     private int capacity;
 
     @Getter
-    @Column(name = "deleted_at")
     private Date deletedAt;
 
-    public Availability(Long experienceId, LocalDateTime startDateTime, LocalDateTime endDateTime, int capacity) {
-        this.experienceId = experienceId;
+    @Getter
+    @OneToMany(mappedBy = "availability", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AvailabilityTicketType> ticketTypes;
+
+    public Availability() {
+        this.ticketTypes = new HashSet<>();
+    }
+
+    public Availability(Experience experience, LocalDateTime startDateTime, LocalDateTime endDateTime, int capacity) {
+        this();
+        this.experience = experience;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.capacity = capacity;
     }
+
+    public void addTicketType(TicketType ticketType, BigDecimal price, int stock) {
+        AvailabilityTicketType availabilityTicketType = new AvailabilityTicketType(this, ticketType, price, stock);
+        this.ticketTypes.add(availabilityTicketType);
+    }
+
+    public void updateTicketTypePriceAndStock(TicketType ticketType, BigDecimal newPrice, int newStock) {
+        this.ticketTypes.stream()
+                .filter(at -> at.getTicketType().equals(ticketType))
+                .findFirst()
+                .ifPresentOrElse(
+                        at -> {
+                            at.setPrice(newPrice);
+                            at.setStock(newStock);
+                        },
+                        () -> {
+                            throw new IllegalStateException("TicketType not found for this Availability.");
+                        });
+    }
+
+    public void decrementStock(TicketType ticketType, int quantity) {
+        this.ticketTypes.stream()
+                .filter(at -> at.getTicketType().equals(ticketType))
+                .findFirst()
+                .ifPresentOrElse(
+                        at -> at.reduceStock(quantity),
+                        () -> {
+                            throw new IllegalStateException("TicketType not found for this Availability.");
+                        });
+    }
+
 
     public void updateInfo(LocalDateTime startDateTime, LocalDateTime endDateTime, int capacity) {
         this.startDateTime = startDateTime;

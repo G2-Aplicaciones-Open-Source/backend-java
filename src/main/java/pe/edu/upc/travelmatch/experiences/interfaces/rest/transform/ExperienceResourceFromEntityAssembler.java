@@ -6,12 +6,12 @@ import pe.edu.upc.travelmatch.experiences.interfaces.rest.resources.ExperienceRe
 public class ExperienceResourceFromEntityAssembler {
     public static ExperienceResource toResourceFromEntity(Experience entity) {
         return new ExperienceResource(
-                entity.getExperienceId().value(),
+                entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-                entity.getAgencyId(),
-                entity.getCategoryId(),
-                entity.getDestinationId(),
+                entity.getAgencyId().value(),
+                entity.getCategory(),
+                entity.getDestinationId().value(),
                 entity.getDuration(),
                 entity.getMeetingPoint()
         );
