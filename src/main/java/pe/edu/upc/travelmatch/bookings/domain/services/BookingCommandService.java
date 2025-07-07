@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface BookingCommandService {
     Long handle(CreateBookingCommand command);
     Optional<Booking> handle(CancelBookingCommand command);
+    String handle(InitiatePaymentCommand command);
     Long handle(ProcessPaymentCommand command);
     boolean handle(FailPaymentCommand command);
     Long handle(ProcessPayoutCommand command);
