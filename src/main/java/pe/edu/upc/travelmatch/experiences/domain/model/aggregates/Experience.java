@@ -29,7 +29,7 @@ public class Experience extends AuditableAbstractAggregateRoot<Experience> {
     @AttributeOverride(name = "value", column = @Column(name = "agency_id", nullable = false))
     private AgencyId agencyId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
